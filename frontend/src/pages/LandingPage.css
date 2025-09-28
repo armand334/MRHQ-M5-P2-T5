@@ -1,11 +1,16 @@
-/* ----- Reset-ish ----- */
+/* ----- Base / reset ----- */
+.z-landing { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
 .z-landing * { box-sizing: border-box; }
-.z-landing body, .z-landing div {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue",
-    Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-}
 .z-landing a { color: inherit; text-decoration: none; }
 .z-landing button { cursor: pointer; border: 0; background: transparent; }
+
+.z-landing a:focus-visible,
+.z-landing button:focus-visible,
+.z-landing input:focus-visible {
+  outline: 3px solid #ffcf9e;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
 
 /* ----- Colors & tokens ----- */
 :root {
@@ -61,91 +66,81 @@
   background: linear-gradient(135deg, var(--z-orange), var(--z-orange-2));
 }
 .avatar-name { font-weight: 700; color: var(--z-text); }
-.userMenu:hover .userMenu__dropdown { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+/* open dropdown on hover AND keyboard focus */
+.userMenu:hover .userMenu__dropdown,
+.userMenu:focus-within .userMenu__dropdown {
+  opacity: 1; pointer-events: auto; transform: translateY(0);
+}
 .userMenu__dropdown {
   position: absolute; right: 0; top: calc(100% + 8px);
   background: #fff; border: 1px solid var(--border); border-radius: 12px;
   box-shadow: var(--z-shadow);
   min-width: 160px; padding: 6px;
   opacity: 0; pointer-events: none; transform: translateY(-4px);
-  transition: all .15s ease;
+  transition: opacity .15s ease, transform .15s ease;
 }
 .dropdown-item {
   width: 100%; padding: 10px 12px; border-radius: 8px; text-align: left; color: #333;
 }
-.dropdown-item:hover { background: #f8f8f8; }
+.dropdown-item:hover,
+.dropdown-item:focus-visible { background: #f8f8f8; }
 
 /* ----- Main nav ----- */
 .mainnav {
   max-width: 1180px; margin: 0 auto; padding: 6px 20px 16px;
-  display: flex; gap: 24px; color: #333;
+  display: flex; gap: 24px; color: #333; flex-wrap: wrap;
 }
 .mainnav a { color: #333; }
 
-/* ----- Search section ----- */
-.search .search__shell {
-  background: #fff; border: 1px solid var(--border);
-  border-radius: 16px; box-shadow: var(--z-shadow);
-  padding: 16px;
-}
-.search__header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 10px;
-}
-.toggleSearch {
-  background: #fff4ea; color: #9a4a00; border: 2px solid #ffcf9e;
-  padding: 8px 14px; border-radius: 999px; font-weight: 800;
-}
-.search__bar { display: grid; margin-top: 8px; }
-.searchInput {
-  border: 2px solid #eee; border-radius: 12px;
-  padding: 12px 14px; font-size: 15px; outline: none;
-}
-.searchInput:focus { border-color: #ffcf9e; box-shadow: 0 0 0 4px #fff4ea; }
-
-.search__filters {
-  display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 8px;
-}
-.filterPill {
-  background: var(--pill-bg); color: #333; padding: 8px 12px;
-  border-radius: 999px; font-weight: 600; border: 1px solid #eaeaea;
-}
-.filterPill--active {
-  background: var(--pill-active); color: var(--pill-active-text); border-color: #ffd9b3;
-}
-
-.search__results { display: grid; gap: 12px; margin-top: 10px; }
-.resultCard {
-  display: grid; gap: 6px; background: #fff;
-  border: 1px solid #f0f0f0; border-radius: 14px; padding: 14px; box-shadow: var(--z-shadow);
-}
-.result__title { display: flex; align-items: center; gap: 8px; font-size: 16px; }
-.result__meta { color: var(--z-muted); font-size: 14px; }
-.result__services { display: flex; gap: 6px; flex-wrap: wrap; }
-.svcPill {
-  background: #f6f6f6; border: 1px solid #ececec; border-radius: 999px;
-  padding: 4px 10px; font-size: 12px;
-}
-.small { padding: 8px 12px; font-size: 14px; }
-
 /* ----- Hero A ----- */
 .heroA {
+  position: relative; overflow: hidden;
   background: linear-gradient(90deg, var(--z-orange), var(--z-orange-2));
-  color: #fff; border-radius: 0; position: relative; overflow: hidden;
+  color: #fff; border-radius: 0;
 }
 .heroA::after {
   content: ""; position: absolute; right: -80px; top: -80px;
   width: 420px; height: 420px; border-radius: 50%;
   background: rgba(255,255,255,.08); filter: blur(2px);
 }
-.heroA__copy { max-width: 1180px; margin: 0 auto; padding: 64px 20px; }
+.heroA__copy { max-width: 1180px; margin: 0 auto; padding: 64px 20px; position: relative; z-index: 2; }
 .heroA h1 { font-size: clamp(28px, 4vw, 48px); line-height: 1.05; margin: 0 0 16px; }
+
 .cta-primary {
   background: #fff; color: #1f2937; border-radius: 999px;
   padding: 12px 18px; font-weight: 800;
   display: inline-flex; align-items: center; gap: 10px;
 }
-.heroA__mapPin { position: absolute; right: 40px; top: 28px; font-size: 28px; }
+
+.hero-btn {
+  background: #1C185F;
+  color: #fff;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-weight: 800;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center; gap: 10px;
+  transition: background 0.2s ease;
+}
+.hero-btn span { font-size: 18px; display: inline-block; }
+.hero-btn:hover { background: #322e82; }
+
+/* Transparent map overlay on the right */
+.heroA__overlay {
+  position: absolute; top: 0; right: 0;
+  height: 100%; width: auto; max-width: 55%;
+  object-fit: contain; opacity: 0.9; z-index: 1; pointer-events: none;
+}
+.heroA__mapPin { position: absolute; right: 40px; top: 28px; z-index: 3; }
+
+@media (max-width: 820px) {
+  .heroA__overlay { width: 42vw; right: 12px; top: 10px; opacity: 0.85; }
+}
+@media (max-width: 560px) {
+  .heroA__overlay { display: none; }
+}
 
 /* ----- Hero B (image only) ----- */
 .heroB { position: relative; background: none; padding: 0; }
@@ -153,7 +148,7 @@
   width: 100%;
   height: clamp(260px, 46vw, 560px);
   background-image: url("/z-station1.jpg");
-  background-size: cover; background-position: center; display: block;
+  background-size: cover; background-position: left; display: block;
 }
 .heroB__copy, .heroB__image { display: none !important; }
 
@@ -206,7 +201,7 @@
 .feature__text h3 { font-size: clamp(22px, 3vw, 34px); margin: 6px 0 8px; }
 .feature__image {
   height: clamp(220px, 42vw, 420px);
-  background-image: url("https://images.unsplash.com/photo-1543269664-76bc3997d9ea?q=80&w=1600&auto=format&fit=crop");
+  background-image: url('Z-Energy-Sharetank.jpg');
   background-size: cover; background-position: center; border-radius: 20px;
   box-shadow: var(--z-shadow);
 }
@@ -251,11 +246,16 @@
 }
 .wide { width: 100%; }
 
+/* ----- Motion reduce ----- */
+@media (prefers-reduced-motion: reduce) {
+  .userMenu__dropdown { transition: none; }
+  .hero-btn { transition: none; }
+}
+
 /* ----- Responsive ----- */
 @media (max-width: 960px) {
   .services { grid-template-columns: 1fr; }
   .highlight__grid { grid-template-columns: 1fr; }
   .feature { grid-template-columns: 1fr; }
   .topbar { grid-template-columns: auto 1fr auto; }
-  .mainnav { flex-wrap: wrap; }
 }
