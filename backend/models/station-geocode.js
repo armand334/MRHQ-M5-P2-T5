@@ -43,7 +43,11 @@ const stationGeocodeSchema = new Schema({
     location: {
         lat: { type: Number, required: true },
         lng: { type: Number, required: true }
-    }
+    },
+
+    stationType: {
+        type: String,
+    },
 
 }, {
     collection: 'stations-geocode' 

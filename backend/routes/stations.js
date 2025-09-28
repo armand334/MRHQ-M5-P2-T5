@@ -37,7 +37,8 @@ async function stationsToJson(stations) {
         location: {
           lat: newStation.location.lat,
           lng: newStation.location.lng
-        }
+        },
+        stationType: newStation.stationType,
       };
       stationsReturn.push(stationJson);
     }
@@ -59,7 +60,7 @@ router.get("/", async (request, response) => {
 
 router.post("/filter", async (request, response) => {
   try {
-    const { services, fuelType, sortBy, location } = request.body;
+    const { services, fuelType, sortBy, location, stationType } = request.body;
 
     // Build query object dynamically
     const query = {};
@@ -70,6 +71,10 @@ router.post("/filter", async (request, response) => {
       // Add services filter if provided and not empty
       if (services && Array.isArray(services) && services.length > 0) {
         query.services = { $all: services };
+      }
+
+      if (stationType && stationType !== 'no station') {
+        query.stationType = stationType.toLowerCase();
       }
 
       // KARL DO STUFF HERE
@@ -92,6 +97,10 @@ router.post("/filter", async (request, response) => {
       // Add services filter if provided and not empty
       if (services && Array.isArray(services) && services.length > 0) {
         query.services = { $all: services };
+      }
+
+      if (stationType && stationType !== 'no station') {
+        query.stationType = stationType.toLowerCase();
       }
 
       // KARL DO STUFF HERE

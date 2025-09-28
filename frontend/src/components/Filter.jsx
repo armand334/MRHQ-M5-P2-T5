@@ -80,9 +80,9 @@ function Filter(props) {
     
     if (selectedSortBy && selectedSortBy !== "no sort") {
       formJson['sortBy'] = selectedSortBy.value;
-
-      formJson['location'] = location.value;
     }
+    
+    formJson['location'] = location.value;
     
     console.log(JSON.stringify(formJson));
     props.setState(formJson);

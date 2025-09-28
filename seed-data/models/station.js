@@ -38,7 +38,11 @@ const stationSchema = new Schema({
 
     avgPrice: {
         type: Number,
-    }
+    },
+
+    stationType: {
+        type: String,
+    },
 
 });
 
