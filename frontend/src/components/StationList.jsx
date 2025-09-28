@@ -164,7 +164,7 @@ function StationList(props) {
                 <li key={station._id} className="station-card">
                   <h2>{station.title}</h2>
                   <p className='station-address'>{station.address}</p>
-                  {/* <Distance station={station} currentLocation={currentLocation} /> */}
+                  <Distance station={station} currentLocation={currentLocation} />
                   {station.hours.hours['Monday'] === 'Open 24 hours' ? (
                     <p id='open-24'>Open 24 hours</p>
                   ) : (
