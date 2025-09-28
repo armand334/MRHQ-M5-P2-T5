@@ -49,8 +49,8 @@ function Filter(props) {
 
   const sortByOptions = [
     { value: "no sort", label: "Sort By" },
-    { value: "Low to High", label: "Low to High" },
-    { value: "High to Low", label: "High to Low" }
+    { value: "Price", label: "Price" },
+    { value: "Distance", label: "Distance" }
   ]
 
   const handleSubmit = (e) => {

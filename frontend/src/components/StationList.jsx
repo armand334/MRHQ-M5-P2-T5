@@ -86,6 +86,8 @@ function StationList(props) {
         }
         else { 
           const formJson = props.state;
+          formJson['currentLocation'] = currentLocation;
+          console.log('Form JSON being sent to backend:', formJson);
           const response = await fetch("http://localhost:3001/stations/filter", {
             method: 'POST',
             body: JSON.stringify(formJson),
@@ -162,7 +164,7 @@ function StationList(props) {
                 <li key={station._id} className="station-card">
                   <h2>{station.title}</h2>
                   <p className='station-address'>{station.address}</p>
-                  <Distance station={station} currentLocation={currentLocation} />
+                  {/* <Distance station={station} currentLocation={currentLocation} /> */}
                   {station.hours.hours['Monday'] === 'Open 24 hours' ? (
                     <p id='open-24'>Open 24 hours</p>
                   ) : (

@@ -3,6 +3,20 @@ const stationModel = require("../models/station");
 const stationGeocodeModel = require("../models/station-geocode");
 var router = express.Router();
 
+// Function to calculate distance between two coordinates using Haversine formula
+function calculateDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371; // Radius of Earth in kilometers
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = R * c; // Distance in kilometers
+  return distance;
+}
+
 async function stationsToJson(stations) {
   let stationsReturn = [];
   for (let station of stations) {
@@ -40,6 +54,7 @@ async function stationsToJson(stations) {
         },
         stationType: newStation.stationType,
       };
+
       stationsReturn.push(stationJson);
     }
   }
@@ -60,7 +75,7 @@ router.get("/", async (request, response) => {
 
 router.post("/filter", async (request, response) => {
   try {
-    const { services, fuelType, sortBy, location, stationType } = request.body;
+    const { services, fuelType, sortBy, location, stationType, currentLocation } = request.body;
 
     // Build query object dynamically
     const query = {};
@@ -85,12 +100,27 @@ router.post("/filter", async (request, response) => {
       query['fuelTypesArray.fuel'] = { $in: fuelTypes };
       
       const sortField = `fuelTypesJson.${fuelType}`;
-      
-      if (sortBy === 'Low to High') {
-        stations = await stationGeocodeModel.find(query).sort({ [sortField]: 1 });        
+
+      if (sortBy === 'Price') {
+        stations = await stationGeocodeModel.find(query).sort({ [sortField]: 1 });
       }
       else {
-        stations = await stationGeocodeModel.find(query).sort({ [sortField]: -1 });
+        stations = await stationGeocodeModel.find(query);
+
+        console.log('currentLocation:', currentLocation);
+        
+        // Sort by distance if currentLocation is provided
+        if (currentLocation && currentLocation[0] && currentLocation[1]) {
+          stations = stations.map(station => ({
+            ...station.toObject(),
+            distance: calculateDistance(
+              currentLocation[0],
+              currentLocation[1],
+              station.location.lat,
+              station.location.lng
+            )
+          })).sort((a, b) => a.distance - b.distance);
+        }
       }
     }
     else {
@@ -114,11 +144,26 @@ router.post("/filter", async (request, response) => {
       }
 
       if (sortBy && sortBy !== 'no sort') {
-        if (sortBy === 'Low to High') {
+        if (sortBy === 'Price') {
           stations = await stationGeocodeModel.find(query).sort({ avgPrice: 1 });
         }
         else {
-          stations = await stationGeocodeModel.find(query).sort({ avgPrice: -1 });
+          stations = await stationGeocodeModel.find(query);
+          
+          // Sort by distance if currentLocation is provided
+          console.log('currentLocation:', currentLocation);
+
+          if (currentLocation && currentLocation[0] && currentLocation[1]) {
+            stations = stations.map(station => ({
+              ...station.toObject(),
+              distance: calculateDistance(
+                currentLocation[0],
+                currentLocation[1],
+                station.location.lat,
+                station.location.lng
+              )
+            })).sort((a, b) => a.distance - b.distance);
+          }
         }
       }
       else {
