@@ -37,7 +37,6 @@ export default function LandingPage() {
       } catch {}
     }
   }, []);
-
   async function handleLoginSubmit(e) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
