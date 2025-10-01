@@ -11,9 +11,16 @@ import "./LandingPage.css";
 
 // ---- Mock login for demo (kept) ----
 async function mockLogin({ email, password }) {
-  await new Promise((r) => setTimeout(r, 650));
+  await new Promise((r) => setTimeout(r, 650)); // simulate network
   if (email === "demo@z.co.nz" && password === "letmein") {
-    return { ok: true, user: { email, name: "Demo User" }, token: "mock-jwt-token-123" };
+    return {
+      ok: true,
+      user: {
+        email,
+        name: "Demo User",
+      },
+      token: "mock-jwt-token-123",
+    };
   }
   return { ok: false, error: "Invalid email or password." };
 }
@@ -37,7 +44,6 @@ export default function LandingPage() {
       } catch {}
     }
   }, []);
-
   async function handleLoginSubmit(e) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
@@ -67,7 +73,12 @@ export default function LandingPage() {
   }
 
   const initials = user?.name
-    ? user.name.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase()
+    ? user.name
+        .split(" ")
+        .map((p) => p[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
     : "";
 
   return (
