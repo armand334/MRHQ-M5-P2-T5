@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
 //Station Schema
-const stationSchema = new Schema({
+const stationGeocodeSchema = new Schema({
     title: { 
         type: String, 
         required: true, 
@@ -40,13 +40,20 @@ const stationSchema = new Schema({
         type: Number,
     },
 
+    location: {
+        lat: { type: Number, required: true },
+        lng: { type: Number, required: true }
+    },
+
     stationType: {
         type: String,
     },
 
+}, {
+    collection: 'stations-geocode' 
 });
 
-stationSchema.index({ title: 'text' });
+stationGeocodeSchema.index({ title: 'text' });
 
 // Define and export
-module.exports = mongoose.model('Station', stationSchema);
+module.exports = mongoose.model('Station-Geocode', stationGeocodeSchema);

@@ -309,7 +309,16 @@ li {
 }
 .station-address {
     margin-top: 1px;
+    margin-bottom: 0px;
 }
 .chevron-icon {
     cursor: pointer;
+}
+@media (max-width: 768px) {
+    .spacer {
+        display: none;
+    }
+    .station-container {
+        display: none;
+    }
 }

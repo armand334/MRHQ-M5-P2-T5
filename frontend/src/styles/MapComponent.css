@@ -1,0 +1,9 @@
+.map-container {
+    width: 60%;
+    height: 710px;
+}
+@media (max-width: 768px) {
+    .map-container {
+        width: 100%;
+    }
+}

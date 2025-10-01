@@ -1,0 +1,16 @@
+FROM node:alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["npm", "start"] 
+
+# docker build -t m5:v0.1 .
+# docker run -p 80:3000 m5:v0.1

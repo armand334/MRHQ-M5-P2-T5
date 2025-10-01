@@ -1,0 +1,16 @@
+# 1. Build the app
+FROM node:alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+ 
+# 2. Setup the server to serve the app
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+
+# docker build -t m5:v0.3 .
+# docker run -p 9000:80 m5:v0.3

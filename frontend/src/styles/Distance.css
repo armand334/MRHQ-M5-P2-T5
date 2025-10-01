@@ -1,0 +1,12 @@
+.distance-container {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+img {
+    margin-right: 1px;
+}
+span {
+    color: var(--Neutral-900, #232323);
+}

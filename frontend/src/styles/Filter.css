@@ -1,3 +1,4 @@
+
 label {
     color: #848484;
     /* P SemiBold */
@@ -61,17 +62,67 @@ select {
 .divider select {
     width: 170px;
 }
+
+/* React Select styling */
+.react-select-container {
+    width: 224px;
+}
+
+.react-select__control {
+    min-height: 56px;
+    padding: 0 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: "Calibre";
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 140%;
+    letter-spacing: -0.042px;
+}
+
+.react-select__placeholder,
+.react-select__single-value {
+    color: #848484;
+}
+
+.react-select__multi-value {
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+.react-select__multi-value__label {
+    color: #333;
+    font-family: "Calibre";
+    font-size: 14px;
+}
+
+.react-select__multi-value__remove {
+    color: #666;
+}
+
+.react-select__multi-value__remove:hover {
+    background-color: #ff6b6b;
+    color: white;
+}
 form {
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-top: 26px;
+    margin-bottom: 26px;
 }
 .filter-container {
     display: flex;
     justify-content: center;
-    height: 118px;
 }
 #apply-filters-button-label {
     color: #ffffff;
+}
+
+/* Hide filter component on mobile devices */
+@media (max-width: 768px) {
+    .filter-container {
+        display: none;
+    }
 }
 

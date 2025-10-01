@@ -1,10 +1,64 @@
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState, lazy, Suspense } from 'react'
 import '../styles/StationList.css'
 import MapComponent from './MapComponent.jsx'
+
+const Distance = lazy(() => import('./Distance.jsx'));
 
 function StationList(props) {
   const [stations, setStations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [locationBoolean, setLocationBoolean] = useState(false);
+  const [destination, setDestination] = useState(null);
+
+  useEffect(() => {
+    if (locationBoolean) return;
+    setLocationBoolean(true);
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setCurrentLocation([position.coords.latitude, position.coords.longitude]);
+            console.log('Current location StationList:', currentLocation);
+          },
+          (error) => {
+            console.error('Error getting location:', error);
+            alert('Unable to get your location. Please enable location services.');
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+          }
+        );
+      }
+      else {
+      alert("Geolocation is not supported by this browser.");
+    }
+
+  }, [locationBoolean]);
+
+  async function directions(currStation) {
+    if (navigator.geolocation) {
+      const response = await fetch('http://localhost:3001/geocodes', {
+        method: 'POST',
+        body: JSON.stringify([currStation]),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      if (typeof data[0].location !== 'undefined') {
+        setDestination([data[0].location.lat, data[0].location.lng]);
+        console.log('Destination StationList:', destination);
+      }
+      else {
+        alert('Unable to get destination location for the selected station.');
+      }
+
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  }
 
   const dateTime = new Date();
   
@@ -12,8 +66,15 @@ function StationList(props) {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        if (JSON.stringify(props.state) === JSON.stringify({stationType: 'no station', fuelType: 'no fuel'})) {
-            const response = await fetch("http://localhost:3000/stations", {
+        if (
+          (JSON.stringify(props.state) === JSON.stringify({stationType: 'no station', fuelType: 'no fuel', sortBy: 'no sort' , location: 'no location'})) || 
+          (props.state.stationType === 'no station' && 
+          props.state.fuelType === 'no fuel' && 
+          props.state.services === '' &&
+          props.state.sortBy === 'no sort' &&
+          props.state.location === 'no location')
+        ) {
+            const response = await fetch("http://localhost:3001/stations", {
             method: 'GET',
             headers: {
               "Content-Type": "application/json"
@@ -22,11 +83,12 @@ function StationList(props) {
           const data = await response.json();
           setStations(data);
           props.setStations(data);
-          console.log('Fetched all stations from StationList:', data);
         }
         else { 
           const formJson = props.state;
-          const response = await fetch("http://localhost:3000/stations/filter", {
+          formJson['currentLocation'] = currentLocation;
+          console.log('Form JSON being sent to backend:', formJson);
+          const response = await fetch("http://localhost:3001/stations/filter", {
             method: 'POST',
             body: JSON.stringify(formJson),
             headers: {
@@ -102,6 +164,7 @@ function StationList(props) {
                 <li key={station._id} className="station-card">
                   <h2>{station.title}</h2>
                   <p className='station-address'>{station.address}</p>
+                  <Distance station={station} currentLocation={currentLocation} />
                   {station.hours.hours['Monday'] === 'Open 24 hours' ? (
                     <p id='open-24'>Open 24 hours</p>
                   ) : (
@@ -214,7 +277,12 @@ function StationList(props) {
                     >
                       Google Maps
                     </a>
-                    <button className='directions-button'>Directions</button>
+                    <button 
+                      className='directions-button'
+                      onClick={() => directions(station)}
+                    >
+                      Directions
+                    </button>
                   </div>
                 </li>
               ))}
@@ -222,7 +290,7 @@ function StationList(props) {
           </div>
         )}
       </div>
-      {!isLoading && <MapComponent stations={stations} setStations={setStations} />}
+      {!isLoading && <MapComponent stations={stations} setStations={setStations} currentLocation={currentLocation} destination={destination} />}
     </div>
   )
 }
