@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage.jsx";
-import MapPage from "./pages/MapPage.jsx"; // you already have this
-// import LoginPage from "./pages/LoginPage.jsx"; // we’ll add later
+import MapPage from "./pages/MapPage.jsx"; 
+// import LoginPage from "./pages/LoginPage.jsx"; 
 
 export default function App() {
   return (
