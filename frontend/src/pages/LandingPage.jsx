@@ -1,25 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
-import '../styles/LandingPage.css'
+// import FindStation from '../components/FindStation';
+// import Nav from '../components/Nav';
+// import Hero from '../components/Hero';
+// import WhatYouNeed from '../components/WhatYouNeed';
+// import MakeTheMostOfZ from '../components/makeTheMostOfZ';
+// import Footer from '../components/Footer';
 
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import "./LandingPage.css";
 
-
-/**
- * Mock "database" for the search UI.
- * You can swap this later for a real API.
- */
-const MOCK_STATIONS = [
-  { id: 1, name: "Z Quay Street", city: "Auckland", services: ["Car wash", "Trailer hire", "Coffee"], distanceKm: 0.6 },
-  { id: 2, name: "Z Fanshawe", city: "Auckland", services: ["LPG bottle swap", "Food and drink"], distanceKm: 1.2 },
-  { id: 3, name: "Z Great South Rd", city: "Auckland", services: ["Car wash", "Food and drink"], distanceKm: 7.8 },
-  { id: 4, name: "Z Vivian Street", city: "Wellington", services: ["Trailer hire", "Coffee"], distanceKm: 494 },
-  { id: 5, name: "Z Moorhouse", city: "Christchurch", services: ["LPG bottle swap", "Food and drink"], distanceKm: 764 },
-];
-
-
-/**
- * Very light client-side "auth".
- * Replace with a real request later (e.g., /auth/login).
- */
+// ---- Mock login for demo (kept) ----
 async function mockLogin({ email, password }) {
   await new Promise((r) => setTimeout(r, 650)); // simulate network
   if (email === "demo@z.co.nz" && password === "letmein") {
@@ -42,12 +32,9 @@ export default function LandingPage() {
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
 
-  // ---- search state ----
-  const [query, setQuery] = useState("");
-  const [serviceFilters, setServiceFilters] = useState([]); // e.g., ["Car wash"]
-  const [showSearch, setShowSearch] = useState(false);
 
-  // read a remembered session (mock)
+
+  // Restore session if present
   useEffect(() => {
     const cached = localStorage.getItem("z-demo-session");
     if (cached) {
@@ -57,26 +44,6 @@ export default function LandingPage() {
       } catch {}
     }
   }, []);
-
-  // ---- search logic (client-side) ----
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return MOCK_STATIONS.filter((s) => {
-      const matchesText =
-        !q ||
-        s.name.toLowerCase().includes(q) ||
-        s.city.toLowerCase().includes(q) ||
-        s.services.some((v) => v.toLowerCase().includes(q));
-      const matchesFilter =
-        serviceFilters.length === 0 ||
-        serviceFilters.every((f) =>
-          s.services.map((x) => x.toLowerCase()).includes(f.toLowerCase())
-        );
-      return matchesText && matchesFilter;
-    }).sort((a, b) => a.distanceKm - b.distanceKm);
-  }, [query, serviceFilters]);
-
-  // ---- login modal handlers ----
   async function handleLoginSubmit(e) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
@@ -90,7 +57,10 @@ export default function LandingPage() {
 
     if (res.ok) {
       setUser(res.user);
-      localStorage.setItem("z-demo-session", JSON.stringify({ user: res.user, token: res.token }));
+      localStorage.setItem(
+        "z-demo-session",
+        JSON.stringify({ user: res.user, token: res.token })
+      );
       setLoginOpen(false);
     } else {
       setLoginError(res.error || "Login failed.");
@@ -102,13 +72,6 @@ export default function LandingPage() {
     localStorage.removeItem("z-demo-session");
   }
 
-  function toggleService(tag) {
-    setServiceFilters((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
-  }
-
-  // For avatar initials after login
   const initials = user?.name
     ? user.name
         .split(" ")
@@ -168,76 +131,7 @@ export default function LandingPage() {
         <a href="#">Locations</a>
       </div>
 
-      {/* ======= SEARCH SECTION ======= */}
-      <section className="search section">
-        <div className="search__shell">
-          <div className="search__header">
-            <h3>Find your closest Z</h3>
-            <button className="toggleSearch" onClick={() => setShowSearch((s) => !s)}>
-              {showSearch ? "Hide search" : "Open search"}
-            </button>
-          </div>
-
-          {showSearch && (
-            <>
-              <div className="search__bar">
-                <input
-                  className="searchInput"
-                  placeholder="Search by station, city, or service (e.g., Car wash)"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  aria-label="Search stations"
-                />
-              </div>
-
-              <div className="search__filters">
-                {["Car wash", "Trailer hire", "LPG bottle swap", "Food and drink", "Coffee"].map(
-                  (tag) => (
-                    <button
-                      key={tag}
-                      className={
-                        "filterPill" + (serviceFilters.includes(tag) ? " filterPill--active" : "")
-                      }
-                      onClick={() => toggleService(tag)}
-                      aria-pressed={serviceFilters.includes(tag)}
-                    >
-                      {tag}
-                    </button>
-                  )
-                )}
-              </div>
-
-              <div className="search__results">
-                {filtered.length === 0 ? (
-                  <div className="empty">No stations match your search.</div>
-                ) : (
-                  filtered.map((s) => (
-                    <div key={s.id} className="resultCard">
-                      <div className="result__title">
-                        <span className="pin">📍</span>
-                        <strong>{s.name}</strong>
-                      </div>
-                      <div className="result__meta">
-                        <span>{s.city}</span> · <span>{s.distanceKm} km</span>
-                      </div>
-                      <div className="result__services">
-                        {s.services.map((sv) => (
-                          <span key={sv} className="svcPill">
-                            {sv}
-                          </span>
-                        ))}
-                      </div>
-                      <button className="cta-secondary small">View details</button>
-                    </div>
-                  ))
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </section>
-
-      {/* ======= HERO A ======= */}
+      {/* ======= HERO (single) ======= */}
       <section className="heroA">
         <div className="heroA__copy">
           <h1>
@@ -245,14 +139,22 @@ export default function LandingPage() {
             <br />
             need us
           </h1>
-          <button className="cta-primary">
+
+
+          <Link
+            to="/map"
+            className="cta-primary hero-btn"
+            aria-label="Go to map to find your closest Z"
+          >
             Find your closest Z <span>➜</span>
-          </button>
+          </Link>
         </div>
-        <div className="heroA__mapPin">📍</div>
+
+        {/* Transparent overlay on the right */}
+        <img className="heroA__overlay" src="/transparent_map.png" alt="" aria-hidden="true" />
       </section>
 
-      {/* ======= HERO B (IMAGE ONLY) ======= */}
+      {/* Blue photo band */}
       <section className="heroB heroB--photo" aria-label="Z Station banner" />
 
       {/* ======= SERVICES ======= */}
@@ -337,48 +239,28 @@ export default function LandingPage() {
           <div>
             <img src="/z-logo.png" alt="Z logo" className="logo-img pill" />
             <ul>
-              <li>
-                <a href="#">At the station</a>
-              </li>
-              <li>
-                <a href="#">Z App</a>
-              </li>
-              <li>
-                <a href="#">Rewards and promotions</a>
-              </li>
+              <li><a href="#">At the station</a></li>
+              <li><a href="#">Z App</a></li>
+              <li><a href="#">Rewards and promotions</a></li>
             </ul>
           </div>
 
           <div>
             <h6>For businesses</h6>
             <ul>
-              <li>
-                <a href="#">Z Business fuel card</a>
-              </li>
-              <li>
-                <a href="#">Fuels and services</a>
-              </li>
-              <li>
-                <a href="#">Business tips and stories</a>
-              </li>
+              <li><a href="#">Z Business fuel card</a></li>
+              <li><a href="#">Fuels and services</a></li>
+              <li><a href="#">Business tips and stories</a></li>
             </ul>
           </div>
 
           <div>
             <h6>About Z</h6>
             <ul>
-              <li>
-                <a href="#">Our story</a>
-              </li>
-              <li>
-                <a href="#">Our people</a>
-              </li>
-              <li>
-                <a href="#">Sustainability</a>
-              </li>
-              <li>
-                <a href="#">Careers at Z</a>
-              </li>
+              <li><a href="#">Our story</a></li>
+              <li><a href="#">Our people</a></li>
+              <li><a href="#">Sustainability</a></li>
+              <li><a href="#">Careers at Z</a></li>
             </ul>
           </div>
 
@@ -431,7 +313,9 @@ export default function LandingPage() {
             <label className="field">
               <span>Password</span>
               <input name="password" type="password" placeholder="••••••••" required />
-              <small className="hint">Try: <code>demo@z.co.nz</code> / <code>letmein</code></small>
+              <small className="hint">
+                Try: <code>demo@z.co.nz</code> / <code>letmein</code>
+              </small>
             </label>
 
             {loginError && <div className="error">{loginError}</div>}
