@@ -112,9 +112,23 @@
   display: inline-flex; align-items: center; gap: 10px;
 }
 
+.newButton {
+  background: #fff; color: #1f2937; border-radius: 999px;
+  padding: 12px 18px; font-weight: 800;
+  display: inline-flex; align-items: center; gap: 10px;
+  background: #1C185F;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-weight: 800;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center; gap: 10px;
+  transition: background 0.2s ease;
+
+}
+
 .hero-btn {
   background: #1C185F;
-  color: #fff;
   border-radius: 999px;
   padding: 12px 22px;
   font-weight: 800;
