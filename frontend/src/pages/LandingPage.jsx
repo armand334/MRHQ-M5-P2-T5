@@ -143,7 +143,7 @@ export default function LandingPage() {
 
           <Link
             to="/map"
-            className="cta-primary hero-btn"
+            className="newButton"
             aria-label="Go to map to find your closest Z"
           >
             Find your closest Z <span>➜</span>
@@ -155,7 +155,7 @@ export default function LandingPage() {
       </section>
 
       {/* Blue photo band */}
-      <section className="heroB heroB--photo" aria-label="Z Station banner" />
+      <img className="heroB heroB--photo" src="/z-station.png" alt="Z station" />
 
       {/* ======= SERVICES ======= */}
       <section className="services section">
@@ -230,7 +230,7 @@ export default function LandingPage() {
             Learn more <span>➜</span>
           </button>
         </div>
-        <div className="feature__image" aria-hidden="true" />
+        <img className="feature__image" src="/Z-Energy-Sharetank.jpg" alt="Sharetank" />
       </section>
 
       {/* ======= FOOTER ======= */}
