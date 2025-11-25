@@ -1,12 +1,12 @@
 <h1> Mission 5 Part 2 from Team 5 </h1>
 <h2> About the project: </h2>
-<p>>Recreation of z.co.nz/find-a-station with design from the Mission Ready UX team. </p
+<p>Recreation of z.co.nz/find-a-station with design from the Mission Ready UX team. </p
 
 <h2>Built with:</h2>
 <ul>
   <li>Javascript React (Vite)</li>
   <li>Node.js (Express)</li>
-  <li>>MongoDB</li
+  <li>MongoDB</li
 </ul>
 
 <h2>Getting started:</h2>
