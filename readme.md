@@ -28,23 +28,23 @@
   <li>db.createView("stations-geocode", "stations", [
     {
     $lookup: {
-      from: "geocodes", // adjust if your collection name is different
+      from: "geocodes", 
       localField: "title",
       foreignField: "key",
       as: "geocodeData"
     }
   },
   {
-    $unwind: "$geocodeData" // converts array to object since it's 1:1
+    $unwind: "$geocodeData" 
   },
   {
     $addFields: {
-      location: "$geocodeData.location" // bring location to top level
+      location: "$geocodeData.location" 
     }
   },
   {
     $project: {
-      geocodeData: 0 // remove the temporary geocodeData field
+      geocodeData: 0 
     }
   }
 ] )
