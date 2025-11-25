@@ -63,5 +63,4 @@
 <ul>
   <li>Dan, Liam, Natalia from Mission Ready</li>
   <li>react-select library</li>
-  <li>Claude</li>
 </ul>
